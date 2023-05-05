@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textSizeSmall">14sp</dimen>
+    <dimen name="textSize">20sp</dimen>
+    <dimen name="textSizeBig">26sp</dimen>
+    <dimen name="textSize40">40sp</dimen>
+    <dimen name="textSizeHuge">52sp</dimen>
+    <dimen name="textSize60">60sp</dimen>
+
+    <dimen name="btnHeight">70dp</dimen>
+    <dimen name="btnWidth">150dp</dimen>
+    <dimen name="btnBigHeight">90dp</dimen>
+    <dimen name="btnBigWidth">280dp</dimen>
+
+    <dimen name="margin_30">30dp</dimen>
+    <dimen name="margin_150">150dp</dimen>
+    <dimen name="padding_10">10dp</dimen>
+    <dimen name="left_margin">30dp</dimen>
+
+    <dimen name="small_margin">8dp</dimen>
+
+</resources>
