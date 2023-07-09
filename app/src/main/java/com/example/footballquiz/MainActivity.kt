@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import com.example.footballquiz.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding : ActivityMainBinding
     private var musicOn = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -18,19 +18,18 @@ class MainActivity : AppCompatActivity() {
         BackgroundMusic.soundPlayer(this, R.raw.menu)
 
         binding.btnPlay.setOnClickListener {
-            val intent = Intent(this, CategoryActivity::class.java)
-            intent.putExtra("music", musicOn.toString())
-            startActivity(intent)
+            Intent(this, CategoryActivity::class.java).apply {
+                putExtra("music", musicOn)
+                putExtra("sound", musicOn)
+                startActivity(this)
+            }
         }
 
-        binding.musicImageMain.setOnClickListener {
+        binding.btnMusic.setOnClickListener {
             musicOn = !musicOn
-            val musicResource = if (musicOn) {
-                R.drawable.music_on
-            } else {
-                R.drawable.music_off
-            }
-            binding.musicImageMain.setImageResource(musicResource)
+            val musicResource = if (musicOn) R.drawable.music_on else R.drawable.music_off
+            binding.btnMusic.setImageResource(musicResource)
+
             BackgroundMusic.music_player?.apply {
                 if (musicOn) start() else pause()
             }

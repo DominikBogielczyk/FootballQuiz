@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <ImageButton
-        android:id="@+id/musicImageMain"
+        android:id="@+id/btnMusic"
         android:layout_width="@dimen/btnBigWidth"
         android:layout_height="76dp"
         android:backgroundTint="@color/light_yellow"

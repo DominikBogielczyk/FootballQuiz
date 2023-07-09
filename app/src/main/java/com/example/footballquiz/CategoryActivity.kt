@@ -8,34 +8,31 @@ import com.example.footballquiz.databinding.ActivityCategoryBinding
 
 class CategoryActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityCategoryBinding
-    private lateinit var musicExtra :String
-    private lateinit var soundExtra :String
+    private lateinit var binding: ActivityCategoryBinding
+    private var musicOn = true
+    private var soundExtra = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCategoryBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        musicExtra = intent.getStringExtra("music").toString()
-        soundExtra = intent.getStringExtra("sound").toString()
+        musicOn = intent.getBooleanExtra("music", true)
+        soundExtra = intent.getBooleanExtra("sound", true)
 
-        binding.btnWorldCup.setOnClickListener()
-        {
-           startQuiz("WorldCup")
+        val buttonQuizMap = mapOf(
+            binding.btnWorldCup to "WorldCup",
+            binding.btnChampionsLeague to "ChampionsLeague",
+            binding.btnPolishFootball to "Polish",
+            binding.btnCuriosities to "Curiosities"
+        )
+
+        buttonQuizMap.forEach { (btnCategory, quizCategory) ->
+            btnCategory.setOnClickListener {
+                startQuiz(quizCategory)
+            }
         }
-        binding.btnChampionsLeague.setOnClickListener()
-        {
-            startQuiz("ChampionsLeague")
-        }
-        binding.btnPolishFootball.setOnClickListener()
-        {
-            startQuiz("Polish")
-        }
-        binding.btnCuriosities.setOnClickListener()
-        {
-            startQuiz("Curiosities")
-        }
+
     }
     private fun startQuiz(category: String) {
         val (cat, music) = when (category) {
@@ -46,13 +43,14 @@ class CategoryActivity : AppCompatActivity() {
             else -> return
         }
 
-        val intent = Intent(this, QuizActivity::class.java).apply {
+        Intent(this, QuizActivity::class.java).apply {
             putExtra("category", cat)
-            putExtra("music", musicExtra)
+            putExtra("music", musicOn)
             putExtra("sound", soundExtra)
+            startActivity(this)
         }
-        startActivity(intent)
-        if(musicExtra == "true")
+
+        if(musicOn)
             BackgroundMusic.soundPlayer(this, music)
         else
             BackgroundMusic.music_player?.pause()
@@ -63,7 +61,7 @@ class CategoryActivity : AppCompatActivity() {
     }
     override fun onResume(){
         super.onResume()
-        if(musicExtra == "true")
+        if(musicOn)
             BackgroundMusic.music_player?.start()
     }
 }

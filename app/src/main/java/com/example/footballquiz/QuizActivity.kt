@@ -38,16 +38,14 @@ class QuizActivity : AppCompatActivity() {
 
         val intent = intent
         category = intent.getStringExtra("category").toString()
+        musicOn = intent.getBooleanExtra("music", true)
+        soundOn = intent.getBooleanExtra("sound", true)
 
-        //check if music is on or off
-        if (intent.getStringExtra("music") == "false") {
-            musicOn = false
+        if (!musicOn)
             binding.musicImage.setImageResource(R.drawable.music_off)
-        }
-        if (intent.getStringExtra("sound") == "false") {
-            soundOn = false
+
+        if (!soundOn)
             binding.soundImage.setImageResource(R.drawable.sound_off)
-        }
 
         //SOUNDS AFTER USER ANSWER
         mediaPlayerCorrect = MediaPlayer.create(this, R.raw.correct_answer)
@@ -80,10 +78,11 @@ class QuizActivity : AppCompatActivity() {
         binding.btnNext.setOnClickListener { checkQuizCounter() }
 
         binding.btnMenu.setOnClickListener {
-            val intentCategory = Intent(this, CategoryActivity::class.java)
-            intentCategory.putExtra("music", musicOn.toString())
-            intentCategory.putExtra("sound", soundOn.toString())
-            startActivity(intentCategory)
+            Intent(this, CategoryActivity::class.java).apply{
+                putExtra("music", musicOn)
+                putExtra("sound", soundOn)
+                startActivity(this)
+            }
         }
 
         binding.soundImage.setOnClickListener {
@@ -197,16 +196,16 @@ class QuizActivity : AppCompatActivity() {
 
     private fun checkQuizCounter() {
         if (quiz.size == 0 || questionNum == MAX_QUESTIONS) {
-            val intent = Intent(this, ResultActivity::class.java).apply {
+            Intent(this, ResultActivity::class.java).apply {
                 putExtra("score", points.toString())
                 putExtra("lastCategory", category)
                 putExtra("questions", questionNum.toString())
-                putExtra("sound", soundOn.toString())
-                putExtra("music", musicOn.toString())}
-
-            startActivity(intent)
-        } else {
-            showNextQuestion()
+                putExtra("sound", soundOn)
+                putExtra("music", musicOn)
+                startActivity(this)
+            }
         }
+        else
+            showNextQuestion()
     }
 }

@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,8 +24,9 @@ class ResultActivity : AppCompatActivity() {
     override fun onBackPressed() {}
 
     private lateinit var binding: ActivityResultBinding
-    private var musicOn = ""
-    private var soundOn = ""
+    private var musicOn = true
+    private var soundOn = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityResultBinding.inflate(LayoutInflater.from(this))
@@ -34,8 +36,8 @@ class ResultActivity : AppCompatActivity() {
         val pts = intent.getStringExtra("score")
         val lastCategory = intent.getStringExtra("lastCategory")
         val questionsNum = intent.getStringExtra("questions")?.toInt()
-        musicOn = intent.getStringExtra("music").toString()
-        soundOn = intent.getStringExtra("sound").toString()
+        musicOn = intent.getBooleanExtra("music", true)
+        soundOn = intent.getBooleanExtra("sound", true)
 
         if (pts != null && questionsNum != null)
             binding.textPoints.text = getString(R.string.result,
@@ -45,10 +47,11 @@ class ResultActivity : AppCompatActivity() {
 
         binding.btnOnceMore.setOnClickListener()
         {
-            val intentAgain = Intent(this, CategoryActivity::class.java)
-            intentAgain.putExtra("music", musicOn.toString())
-            intentAgain.putExtra("sound", soundOn.toString())
-            startActivity(intentAgain)
+            Intent(this, CategoryActivity::class.java).apply {
+                putExtra("music", musicOn)
+                putExtra("sound", soundOn)
+                startActivity(this)
+            }
         }
         binding.btnClose.setOnClickListener()
         {
@@ -58,26 +61,29 @@ class ResultActivity : AppCompatActivity() {
         binding.btnShare.setOnClickListener()
         {
             //TAKE SCREENSHOT
-            val v: View = window.decorView.rootView
-            v.setDrawingCacheEnabled(true)
-            val bmp: Bitmap = Bitmap.createBitmap(v.drawingCache)
-            v.destroyDrawingCache()
-            try {
-                val fos = openFileOutput("screen.png", MODE_PRIVATE)
-                bmp.compress(CompressFormat.PNG, 100, fos)
+            val filename = "screen.png"
+            val bitmap = Bitmap.createBitmap(binding.root.width, binding.root.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            binding.root.draw(canvas)
+            try
+            {
+                val fos = openFileOutput(filename, MODE_PRIVATE)
+                bitmap.compress(CompressFormat.PNG, 100, fos)
                 fos.flush()
                 fos.close()
-            } catch (e: FileNotFoundException) {
+            }
+            catch (e: FileNotFoundException) {
                 e.printStackTrace()
-            } catch (e: IOException) {
+            }
+            catch (e: IOException) {
                 e.printStackTrace()
             }
 
+            //MESSENGER
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "image/png"
-            //MESSENGER
             shareIntent.setPackage("com.facebook.orca")
-            val file = File(filesDir, "screen.png")
+            val file = File(filesDir, filename)
             val uri = FileProvider.getUriForFile(this, "com.anni.shareimage.fileprovider", file)
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
             try {
@@ -94,7 +100,7 @@ class ResultActivity : AppCompatActivity() {
     }
     override fun onResume(){
         super.onResume()
-        if(musicOn == "true")
+        if(musicOn)
             BackgroundMusic.music_player?.start()
     }
 }
