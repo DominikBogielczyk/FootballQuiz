@@ -50,7 +50,7 @@ class CategoryActivity : AppCompatActivity() {
             startActivity(this)
         }
 
-        if(musicOn)
+        if(musicOn && BackgroundMusic.getRawId() != music)
             BackgroundMusic.soundPlayer(this, music)
         else
             BackgroundMusic.musicPlayer?.pause()
