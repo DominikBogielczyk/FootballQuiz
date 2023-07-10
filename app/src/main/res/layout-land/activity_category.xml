@@ -9,55 +9,39 @@
 
     <Button
         android:id="@+id/btnWorldCup"
-        android:layout_width="@dimen/btnBigWidth"
-        android:layout_height="@dimen/btnBigHeight"
+        style="@style/MenuButtonHorizontal"
         android:text="@string/world_cup"
-        android:textSize="@dimen/textSizeBig"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.13"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintBottom_toTopOf="@+id/btnPolishFootball"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btnChampionsLeague"
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <Button
         android:id="@+id/btnChampionsLeague"
-        android:layout_width="@dimen/btnBigWidth"
-        android:layout_height="@dimen/btnBigHeight"
+        style="@style/MenuButtonHorizontal"
         android:text="@string/champions_legaue"
-        android:textSize="@dimen/textSizeBig"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.87"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintBottom_toTopOf="@+id/btnCuriosities"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btnWorldCup"
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <Button
         android:id="@+id/btnPolishFootball"
-        android:layout_width="@dimen/btnBigWidth"
-        android:layout_height="@dimen/btnBigHeight"
+        style="@style/MenuButtonHorizontal"
         android:text="@string/polish_football"
-        android:textSize="@dimen/textSizeBig"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.13"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btnCuriosities"
+        app:layout_constraintTop_toBottomOf="@+id/btnWorldCup" />
 
     <Button
         android:id="@+id/btnCuriosities"
-        android:layout_width="@dimen/btnBigWidth"
-        android:layout_height="@dimen/btnBigHeight"
+        style="@style/MenuButtonHorizontal"
         android:text="@string/curiosities"
-        android:textSize="@dimen/textSizeBig"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.87"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btnPolishFootball"
+        app:layout_constraintTop_toBottomOf="@id/btnChampionsLeague"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
