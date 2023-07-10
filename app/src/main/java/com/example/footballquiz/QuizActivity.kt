@@ -45,7 +45,7 @@ class QuizActivity : AppCompatActivity() {
             binding.musicImage.setImageResource(R.drawable.music_off)
 
         if (!soundOn)
-            binding.soundImage.setImageResource(R.drawable.sound_off)
+            binding.btnSound.setImageResource(R.drawable.sound_off)
 
         //SOUNDS AFTER USER ANSWER
         mediaPlayerCorrect = MediaPlayer.create(this, R.raw.correct_answer)
@@ -84,35 +84,33 @@ class QuizActivity : AppCompatActivity() {
                 startActivity(this)
             }
         }
-
-        binding.soundImage.setOnClickListener {
+        binding.btnSound.setOnClickListener {
             soundOn = !soundOn
-            if (soundOn)
-                binding.soundImage.setImageResource(R.drawable.sound_on)
-            else
-                binding.soundImage.setImageResource(R.drawable.sound_off)
+            binding.btnSound.setImageResource(
+                if (soundOn) R.drawable.sound_on else R.drawable.sound_off
+            )
         }
-
         binding.musicImage.setOnClickListener {
             musicOn = !musicOn
-            if (musicOn) {
-                binding.musicImage.setImageResource(R.drawable.music_on)
-                BackgroundMusic.music_player?.start()
-            } else {
-                binding.musicImage.setImageResource(R.drawable.music_off)
-                BackgroundMusic.music_player?.pause()
+
+            binding.musicImage.setImageResource(
+                if (musicOn) R.drawable.music_on else R.drawable.music_off
+            )
+
+            BackgroundMusic.musicPlayer?.apply {
+                if (musicOn) start() else pause()
             }
         }
     }
 
     override fun onPause(){
         super.onPause()
-        BackgroundMusic.music_player?.pause()
+        BackgroundMusic.musicPlayer?.pause()
     }
     override fun onResume(){
         super.onResume()
         if(musicOn)
-            BackgroundMusic.music_player?.start()
+            BackgroundMusic.musicPlayer?.start()
     }
 
     override fun onDestroy() {
@@ -140,6 +138,7 @@ class QuizActivity : AppCompatActivity() {
 
         binding.textQuestion.text =
             getString(R.string.question, questionNum.toString(), size.toString(), record[0])
+
         //RIGHT ANSWER
         correctAnswer = record[1]
 
@@ -176,22 +175,23 @@ class QuizActivity : AppCompatActivity() {
                 mediaPlayerWrong.start()
 
             btnAnswer.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
-            //SET ORANGE BACKGROUND IF TO THE CORRECT ANSWER
+            //SET ORANGE BACKGROUND TO THE CORRECT ANSWER
             when (correctAnswer) {
                 binding.btnAnswerA.text -> binding.btnAnswerA.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
                 binding.btnAnswerB.text -> binding.btnAnswerB.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
                 binding.btnAnswerC.text -> binding.btnAnswerC.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
                 binding.btnAnswerD.text -> binding.btnAnswerD.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
             }
-
         }
         binding.btnNext.visibility = View.VISIBLE
         binding.btnMenu.visibility = View.VISIBLE
 
-        binding.btnAnswerA.isClickable = false
-        binding.btnAnswerB.isClickable = false
-        binding.btnAnswerC.isClickable = false
-        binding.btnAnswerD.isClickable = false
+        val answerButtons =
+            listOf(binding.btnAnswerA, binding.btnAnswerB, binding.btnAnswerC, binding.btnAnswerD)
+        answerButtons.forEach()
+        {
+            it.isClickable = false
+        }
     }
 
     private fun checkQuizCounter() {

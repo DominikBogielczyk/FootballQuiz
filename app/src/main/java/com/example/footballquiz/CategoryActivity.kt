@@ -53,15 +53,15 @@ class CategoryActivity : AppCompatActivity() {
         if(musicOn)
             BackgroundMusic.soundPlayer(this, music)
         else
-            BackgroundMusic.music_player?.pause()
+            BackgroundMusic.musicPlayer?.pause()
     }
     override fun onPause(){
         super.onPause()
-        BackgroundMusic.music_player?.pause()
+        BackgroundMusic.musicPlayer?.pause()
     }
     override fun onResume(){
         super.onResume()
         if(musicOn)
-            BackgroundMusic.music_player?.start()
+            BackgroundMusic.musicPlayer?.start()
     }
 }

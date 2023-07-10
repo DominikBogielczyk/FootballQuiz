@@ -7,7 +7,6 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -96,11 +95,11 @@ class ResultActivity : AppCompatActivity() {
 
     override fun onPause(){
         super.onPause()
-        BackgroundMusic.music_player?.pause()
+        BackgroundMusic.musicPlayer?.pause()
     }
     override fun onResume(){
         super.onResume()
         if(musicOn)
-            BackgroundMusic.music_player?.start()
+            BackgroundMusic.musicPlayer?.start()
     }
 }

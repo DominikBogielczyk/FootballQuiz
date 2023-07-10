@@ -30,21 +30,21 @@ class MainActivity : AppCompatActivity() {
             val musicResource = if (musicOn) R.drawable.music_on else R.drawable.music_off
             binding.btnMusic.setImageResource(musicResource)
 
-            BackgroundMusic.music_player?.apply {
+            BackgroundMusic.musicPlayer?.apply {
                 if (musicOn) start() else pause()
             }
         }
     }
     override fun onPause(){
         super.onPause()
-        BackgroundMusic.music_player?.pause()
+        BackgroundMusic.musicPlayer?.pause()
     }
     override fun onResume(){
         super.onResume()
-        BackgroundMusic.music_player?.start()
+        BackgroundMusic.musicPlayer?.start()
     }
     override fun onDestroy() {
         super.onDestroy()
-        BackgroundMusic.music_player?.release()
+        BackgroundMusic.musicPlayer?.release()
     }
 }
