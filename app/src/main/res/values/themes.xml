@@ -39,4 +39,13 @@
         <item name="android:padding">10dp</item>
     </style>
 
+    <style name="CountdownProgress" parent="android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:max">20000</item>
+        <item name="android:progressBackgroundTint">@color/white</item>
+        <item name="android:progressTint">@color/green</item>
+        <item name="android:layout_marginBottom">@dimen/small_margin</item>
+    </style>
+
 </resources>

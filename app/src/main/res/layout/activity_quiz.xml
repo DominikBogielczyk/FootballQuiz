@@ -125,5 +125,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/music_on" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/CountdownProgress"
+        app:layout_constraintBottom_toTopOf="@+id/textQuestion"
+        app:layout_constraintLeft_toLeftOf="@+id/textQuestion"
+        app:layout_constraintRight_toRightOf="@+id/textQuestion"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,10 @@
 package com.example.footballquiz
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -28,7 +30,22 @@ class QuizActivity : AppCompatActivity() {
     override fun onBackPressed() {}
 
     private companion object {
-        const val MAX_QUESTIONS = 20
+        const val MAX_QUESTIONS = 40
+    }
+
+    private val timer = object: CountDownTimer(20000, 50) {
+        override fun onTick(millisUntilFinished: Long) {
+            val t = 20000 - millisUntilFinished.toInt()
+            binding.progressBar.progress = t
+            binding.progressBar.progressTintList = when(t){
+                in 0..10000 ->  ColorStateList.valueOf(ContextCompat.getColor(this@QuizActivity, R.color.green))
+                in 10001..15000 -> ColorStateList.valueOf(ContextCompat.getColor(this@QuizActivity, R.color.light_yellow))
+                else -> ColorStateList.valueOf(ContextCompat.getColor(this@QuizActivity, R.color.red))
+            }
+        }
+        override fun onFinish() {
+            checkAnswer(null)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,6 +137,8 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun showNextQuestion() {
+        timer.start()
+
         questionNum++
         binding.btnNext.visibility = View.INVISIBLE
         binding.btnMenu.visibility = View.INVISIBLE
@@ -158,8 +177,8 @@ class QuizActivity : AppCompatActivity() {
 
     }
 
-    private fun checkAnswer(btnAnswer: Button) {
-        val userAnswer = btnAnswer.text
+    private fun checkAnswer(btnAnswer: Button?) {
+        val userAnswer = btnAnswer?.text
 
         //CORRECT ANSWER
         if (userAnswer == correctAnswer) {
@@ -174,7 +193,7 @@ class QuizActivity : AppCompatActivity() {
             if (soundOn)
                 mediaPlayerWrong.start()
 
-            btnAnswer.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
+            btnAnswer?.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
             //SET ORANGE BACKGROUND TO THE CORRECT ANSWER
             when (correctAnswer) {
                 binding.btnAnswerA.text -> binding.btnAnswerA.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
