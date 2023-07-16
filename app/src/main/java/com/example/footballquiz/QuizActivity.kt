@@ -180,6 +180,8 @@ class QuizActivity : AppCompatActivity() {
     private fun checkAnswer(btnAnswer: Button?) {
         val userAnswer = btnAnswer?.text
 
+        timer.cancel() //STOP THE TIMER
+
         //CORRECT ANSWER
         if (userAnswer == correctAnswer) {
             btnAnswer.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
