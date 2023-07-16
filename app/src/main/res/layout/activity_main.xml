@@ -9,7 +9,7 @@
 
     <Button
         android:id="@+id/btnPlay"
-        style="@style/MenuButtonVertical"
+        style="@style/ButtonVertical"
         android:text="@string/play"
         app:layout_constraintBottom_toTopOf="@+id/btnMusic"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -18,7 +18,7 @@
 
     <ImageButton
         android:id="@+id/btnMusic"
-        style="@style/MenuButtonVertical"
+        style="@style/ButtonVertical"
         android:backgroundTint="@color/light_yellow"
         android:contentDescription="@string/music_description"
         app:layout_constraintBottom_toTopOf="parent"

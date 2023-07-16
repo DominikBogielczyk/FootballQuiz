@@ -9,7 +9,7 @@
 
     <Button
         android:id="@+id/btnWorldCup"
-        style="@style/MenuButtonHorizontal"
+        style="@style/ButtonHorizontal"
         android:text="@string/world_cup"
         app:layout_constraintBottom_toTopOf="@+id/btnPolishFootball"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -18,7 +18,7 @@
 
     <Button
         android:id="@+id/btnChampionsLeague"
-        style="@style/MenuButtonHorizontal"
+        style="@style/ButtonHorizontal"
         android:text="@string/champions_legaue"
         app:layout_constraintBottom_toTopOf="@+id/btnCuriosities"
         app:layout_constraintRight_toRightOf="parent"
@@ -27,7 +27,7 @@
 
     <Button
         android:id="@+id/btnPolishFootball"
-        style="@style/MenuButtonHorizontal"
+        style="@style/ButtonHorizontal"
         android:text="@string/polish_football"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -36,7 +36,7 @@
 
     <Button
         android:id="@+id/btnCuriosities"
-        style="@style/MenuButtonHorizontal"
+        style="@style/ButtonHorizontal"
         android:text="@string/curiosities"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
