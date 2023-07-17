@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:textAlignment="center"
-    tools:context=".MainActivity">
+    tools:context=".QuizActivity">
 
     <TextView
         android:id="@+id/textInfo"
         style="@style/TextQuestion"
         android:layout_marginTop="@dimen/small_margin"
-        android:text="@string/question2"
+        android:text="@string/info"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -22,10 +22,12 @@
     <Button
         android:id="@+id/btnNextQuestion"
         style="@style/ButtonVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
         android:text="@string/ok"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInfo" />
 

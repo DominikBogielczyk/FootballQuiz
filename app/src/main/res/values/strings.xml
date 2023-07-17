@@ -24,4 +24,5 @@
     <string name="music_description">Music image</string>
     <string name="share">Udostępnij</string>
     <string name="ok">OK</string>
+    <string name="info">Odpowiedź:\n%1$s\n\n %2$s</string>
 </resources>

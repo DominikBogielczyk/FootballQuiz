@@ -17,7 +17,9 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var mediaPlayerCorrect: MediaPlayer
     private lateinit var mediaPlayerWrong: MediaPlayer
     private lateinit var binding: ActivityQuizBinding
+    private var isCorrectAnswer = false
     private var correctAnswer = ""
+    private var questionInfo = ""
     private var points = 0
     private var questionNum = 0
     private var quizSize = 0
@@ -25,13 +27,13 @@ class QuizActivity : AppCompatActivity() {
     private var soundOn = true
     private var musicOn = true
     private var quiz = mutableListOf<MutableList<String>>()
+    private lateinit var answerButtons: List<Button>
 
     //disable back press button
     override fun onBackPressed() {}
 
     private companion object {
-        const val MAX_QUESTIONS = 40
-    }
+        const val MAX_QUESTIONS = 40 }
 
     private val timer = object: CountDownTimer(20000, 50) {
         override fun onTick(millisUntilFinished: Long) {
@@ -52,6 +54,9 @@ class QuizActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityQuizBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
+
+        answerButtons =
+            listOf(binding.btnAnswerA, binding.btnAnswerB, binding.btnAnswerC, binding.btnAnswerD)
 
         val intent = intent
         category = intent.getStringExtra("category").toString()
@@ -93,20 +98,13 @@ class QuizActivity : AppCompatActivity() {
         binding.btnAnswerC.setOnClickListener { checkAnswer(binding.btnAnswerC) }
         binding.btnAnswerD.setOnClickListener { checkAnswer(binding.btnAnswerD) }
         binding.btnInfo.setOnClickListener {
-            binding.btnAnswerA.visibility = View.INVISIBLE
-            binding.btnAnswerB.visibility = View.INVISIBLE
-            binding.btnAnswerC.visibility = View.INVISIBLE
-            binding.btnAnswerD.visibility = View.INVISIBLE
-            binding.textInfo.visibility = View.VISIBLE
-            binding.textInfo.text = "TEST"
-            binding.btnMenu.visibility = View.INVISIBLE
-            binding.btnInfo.visibility = View.INVISIBLE
-            binding.btnNextQuestion.visibility = View.VISIBLE
+            if(!isCorrectAnswer)
+                showInfo()
+            else
+                checkQuizCounter()
         }
         binding.btnNextQuestion.setOnClickListener{
             checkQuizCounter()
-            binding.textInfo.visibility = View.INVISIBLE
-            binding.btnNextQuestion.visibility = View.INVISIBLE
         }
 
         binding.btnMenu.setOnClickListener {
@@ -152,14 +150,14 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun showNextQuestion() {
-        timer.start()
-
-        questionNum++
         binding.btnInfo.visibility = View.INVISIBLE
         binding.btnMenu.visibility = View.INVISIBLE
+        binding.textInfo.visibility = View.INVISIBLE
+        binding.btnNextQuestion.visibility = View.INVISIBLE
 
-        val answerButtons =
-            listOf(binding.btnAnswerA, binding.btnAnswerB, binding.btnAnswerC, binding.btnAnswerD)
+        timer.start()
+        questionNum++
+
         answerButtons.forEach {
             it.setBackgroundColor(ContextCompat.getColor(this, R.color.light_yellow))
             it.isClickable = true
@@ -177,8 +175,20 @@ class QuizActivity : AppCompatActivity() {
         //RIGHT ANSWER
         correctAnswer = record[1]
 
-        //REMOVE QUESTION FROM RECORD BEFORE SHUFFLE
-        record.removeAt(0)
+        //USER INFO IF WRONG ANSWER
+        try{
+            questionInfo  = record.getOrNull(5) ?: ""
+
+            //REMOVE INFO FROM RECORD BEFORE SHUFFLE
+            if(questionInfo != "")
+                record.removeAt(5)
+            //REMOVE QUESTION FROM RECORD BEFORE SHUFFLE
+            record.removeAt(0)
+        }
+        finally {
+            binding.textInfo.text = getString(R.string.info, correctAnswer, questionInfo)
+        }
+
 
         //SHUFFLE ANSWERS
         record.shuffle()
@@ -190,24 +200,32 @@ class QuizActivity : AppCompatActivity() {
 
         //REMOVE THIS QUESTION FROM QUERY
         quiz.removeAt(0)
-
     }
 
     private fun checkAnswer(btnAnswer: Button?) {
-        val userAnswer = btnAnswer?.text
+        binding.btnInfo.visibility = View.VISIBLE
+        binding.btnMenu.visibility = View.VISIBLE
+        answerButtons.forEach()
+        {
+            it.isClickable = false
+        }
 
         timer.cancel() //STOP THE TIMER
 
-        //CORRECT ANSWER
+        val userAnswer = btnAnswer?.text
+
+        //IF CORRECT ANSWER
         if (userAnswer == correctAnswer) {
             btnAnswer.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
             points++
+            isCorrectAnswer = true
 
             if (soundOn)
                 mediaPlayerCorrect.start()
         }
-        //WRONG ANSWER
+        //IF WRONG ANSWER
         else {
+            isCorrectAnswer = false
             if (soundOn)
                 mediaPlayerWrong.start()
 
@@ -220,18 +238,10 @@ class QuizActivity : AppCompatActivity() {
                 binding.btnAnswerD.text -> binding.btnAnswerD.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
             }
         }
-        binding.btnInfo.visibility = View.VISIBLE
-        binding.btnMenu.visibility = View.VISIBLE
-
-        val answerButtons =
-            listOf(binding.btnAnswerA, binding.btnAnswerB, binding.btnAnswerC, binding.btnAnswerD)
-        answerButtons.forEach()
-        {
-            it.isClickable = false
-        }
     }
 
     private fun checkQuizCounter() {
+        //CHECK IF IT IS THE GAME END
         if (quiz.size == 0 || questionNum == MAX_QUESTIONS) {
             Intent(this, ResultActivity::class.java).apply {
                 putExtra("score", points.toString())
@@ -244,5 +254,17 @@ class QuizActivity : AppCompatActivity() {
         }
         else
             showNextQuestion()
+    }
+
+    private fun showInfo()
+    {
+        answerButtons.forEach()
+        {
+            it.visibility = View.INVISIBLE
+        }
+        binding.textInfo.visibility = View.VISIBLE
+        binding.btnMenu.visibility = View.INVISIBLE
+        binding.btnInfo.visibility = View.INVISIBLE
+        binding.btnNextQuestion.visibility = View.VISIBLE
     }
 }
