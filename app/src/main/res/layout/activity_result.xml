@@ -38,7 +38,7 @@
         android:id="@+id/textPoints"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/small_margin"
+        android:layout_margin="@dimen/big_margin"
         android:background="@color/white"
         android:text="@string/result"
         android:textAlignment="center"

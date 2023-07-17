@@ -21,6 +21,19 @@
         <item name="android:layout_height">@dimen/btnBigHeight</item>
     </style>
 
+    <style name="TextQuestion">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/small_margin</item>
+        <item name="android:layout_marginEnd">@dimen/small_margin</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:padding">@dimen/padding_10</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/dark_green</item>
+        <item name="android:textSize">@dimen/textSizeBig</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="ButtonHorizontal" parent="@android:style/TextAppearance">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/black</item>

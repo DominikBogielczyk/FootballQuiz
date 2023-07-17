@@ -92,7 +92,22 @@ class QuizActivity : AppCompatActivity() {
         binding.btnAnswerB.setOnClickListener { checkAnswer(binding.btnAnswerB) }
         binding.btnAnswerC.setOnClickListener { checkAnswer(binding.btnAnswerC) }
         binding.btnAnswerD.setOnClickListener { checkAnswer(binding.btnAnswerD) }
-        binding.btnNext.setOnClickListener { checkQuizCounter() }
+        binding.btnInfo.setOnClickListener {
+            binding.btnAnswerA.visibility = View.INVISIBLE
+            binding.btnAnswerB.visibility = View.INVISIBLE
+            binding.btnAnswerC.visibility = View.INVISIBLE
+            binding.btnAnswerD.visibility = View.INVISIBLE
+            binding.textInfo.visibility = View.VISIBLE
+            binding.textInfo.text = "TEST"
+            binding.btnMenu.visibility = View.INVISIBLE
+            binding.btnInfo.visibility = View.INVISIBLE
+            binding.btnNextQuestion.visibility = View.VISIBLE
+        }
+        binding.btnNextQuestion.setOnClickListener{
+            checkQuizCounter()
+            binding.textInfo.visibility = View.INVISIBLE
+            binding.btnNextQuestion.visibility = View.INVISIBLE
+        }
 
         binding.btnMenu.setOnClickListener {
             Intent(this, CategoryActivity::class.java).apply{
@@ -140,7 +155,7 @@ class QuizActivity : AppCompatActivity() {
         timer.start()
 
         questionNum++
-        binding.btnNext.visibility = View.INVISIBLE
+        binding.btnInfo.visibility = View.INVISIBLE
         binding.btnMenu.visibility = View.INVISIBLE
 
         val answerButtons =
@@ -148,6 +163,7 @@ class QuizActivity : AppCompatActivity() {
         answerButtons.forEach {
             it.setBackgroundColor(ContextCompat.getColor(this, R.color.light_yellow))
             it.isClickable = true
+            it.visibility = View.VISIBLE
         }
 
         val record = quiz[0]
@@ -204,7 +220,7 @@ class QuizActivity : AppCompatActivity() {
                 binding.btnAnswerD.text -> binding.btnAnswerD.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
             }
         }
-        binding.btnNext.visibility = View.VISIBLE
+        binding.btnInfo.visibility = View.VISIBLE
         binding.btnMenu.visibility = View.VISIBLE
 
         val answerButtons =

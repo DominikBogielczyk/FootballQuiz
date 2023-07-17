@@ -8,8 +8,29 @@
     android:textAlignment="center"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/textInfo"
+        style="@style/TextQuestion"
+        android:layout_marginTop="@dimen/small_margin"
+        android:text="@string/question2"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textQuestion" />
+
     <Button
-        android:id="@+id/btnNext"
+        android:id="@+id/btnNextQuestion"
+        style="@style/ButtonVertical"
+        android:text="@string/ok"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInfo" />
+
+    <Button
+        android:id="@+id/btnInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/small_margin"
@@ -41,23 +62,14 @@
         android:textSize="@dimen/textSizeSmall"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnNext"
+        app:layout_constraintEnd_toStartOf="@+id/btnInfo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAnswerC" />
 
     <TextView
         android:id="@+id/textQuestion"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_margin"
-        android:layout_marginEnd="@dimen/small_margin"
-        android:background="@color/white"
-        android:padding="@dimen/padding_10"
+        style="@style/TextQuestion"
         android:text="@string/question2"
-        android:textAlignment="center"
-        android:textColor="@color/dark_green"
-        android:textSize="@dimen/textSizeBig"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +108,7 @@
         android:id="@+id/btnAnswerD"
         style="@style/ButtonAnswer"
         android:text="@string/answerD"
-        app:layout_constraintBottom_toTopOf="@+id/btnNext"
+        app:layout_constraintBottom_toTopOf="@+id/btnInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnAnswerC"
         app:layout_constraintTop_toBottomOf="@+id/btnAnswerB" />
