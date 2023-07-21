@@ -17,22 +17,13 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var mediaPlayerCorrect: MediaPlayer
     private lateinit var mediaPlayerWrong: MediaPlayer
     private lateinit var binding: ActivityQuizBinding
-    private var correctAnswer = ""
-    private var questionInfo = ""
-    private var quizSize = 0
-    private var category = ""
-    private var soundOn = true
-    private var musicOn = true
-    private var quiz = mutableListOf<MutableList<String>>()
     private lateinit var answerButtons: List<Button>
 
+    private var quiz = Quiz(category = "", musicOn = true, soundOn = true, maxQuestions = 40, size = 0)
     private var score = Score(0, 0, false)
 
     //disable back press button
     override fun onBackPressed() {}
-
-    private companion object {
-        const val MAX_QUESTIONS = 40 }
 
     private val timer = object: CountDownTimer(20000, 50) {
         override fun onTick(millisUntilFinished: Long) {
@@ -58,38 +49,40 @@ class QuizActivity : AppCompatActivity() {
             listOf(binding.btnAnswerA, binding.btnAnswerB, binding.btnAnswerC, binding.btnAnswerD)
 
         val intent = intent
-        category = intent.getStringExtra("category").toString()
-        musicOn = intent.getBooleanExtra("music", true)
-        soundOn = intent.getBooleanExtra("sound", true)
+        quiz.category = intent.getStringExtra("category").toString()
+        quiz.musicOn = intent.getBooleanExtra("music", true)
+        quiz.soundOn = intent.getBooleanExtra("sound", true)
 
-        if (!musicOn)
+        if (!quiz.musicOn)
             binding.musicImage.setImageResource(R.drawable.music_off)
 
-        if (!soundOn)
+        if (!quiz.soundOn)
             binding.btnSound.setImageResource(R.drawable.sound_off)
 
         //SOUNDS AFTER USER ANSWER
         mediaPlayerCorrect = MediaPlayer.create(this, R.raw.correct_answer)
         mediaPlayerWrong = MediaPlayer.create(this, R.raw.wrong_answer)
 
-        when (category) {
+        when (quiz.category) {
             getString(R.string.world_cup) -> {
-                quiz = readCsv(this, R.raw.world_cup)
+                quiz.questions = quiz.readCsv(this, R.raw.world_cup)
             }
             getString(R.string.champions_legaue) -> {
-                quiz = readCsv(this, R.raw.champions_league)
+                quiz.questions = quiz.readCsv(this, R.raw.champions_league)
             }
             getString(R.string.polish_football) -> {
-                quiz = readCsv(this, R.raw.polish_football)
+                quiz.questions = quiz.readCsv(this, R.raw.polish_football)
             }
             getString(R.string.curiosities) -> {
-                quiz = readCsv(this, R.raw.curiosities)
+                quiz.questions = quiz.readCsv(this, R.raw.curiosities)
             }
         }
-        quizSize = quiz.size
+        quiz.size = if(quiz.questions.size > quiz.maxQuestions) quiz.maxQuestions else quiz.questions.size
 
         //SHUFFLE QUESTIONS
-        quiz.shuffle()
+        quiz.questions.shuffle()
+
+        //SHOW FIRST QUESTION
         showNextQuestion()
 
         binding.btnAnswerA.setOnClickListener { checkAnswer(binding.btnAnswerA) }
@@ -97,10 +90,7 @@ class QuizActivity : AppCompatActivity() {
         binding.btnAnswerC.setOnClickListener { checkAnswer(binding.btnAnswerC) }
         binding.btnAnswerD.setOnClickListener { checkAnswer(binding.btnAnswerD) }
         binding.btnInfo.setOnClickListener {
-            if(!score.isCorrectAnswer)
-                showInfo()
-            else
-                checkQuizCounter()
+            if(!score.isCorrectAnswer) showInfo() else checkQuizCounter()
         }
         binding.btnNextQuestion.setOnClickListener{
             checkQuizCounter()
@@ -108,26 +98,26 @@ class QuizActivity : AppCompatActivity() {
 
         binding.btnMenu.setOnClickListener {
             Intent(this, CategoryActivity::class.java).apply{
-                putExtra("music", musicOn)
-                putExtra("sound", soundOn)
+                putExtra("music", quiz.musicOn)
+                putExtra("sound", quiz.soundOn)
                 startActivity(this)
             }
         }
         binding.btnSound.setOnClickListener {
-            soundOn = !soundOn
+            quiz.soundOn = !quiz.soundOn
             binding.btnSound.setImageResource(
-                if (soundOn) R.drawable.sound_on else R.drawable.sound_off
+                if (quiz.soundOn) R.drawable.sound_on else R.drawable.sound_off
             )
         }
         binding.musicImage.setOnClickListener {
-            musicOn = !musicOn
+            quiz.musicOn = !quiz.musicOn
 
             binding.musicImage.setImageResource(
-                if (musicOn) R.drawable.music_on else R.drawable.music_off
+                if (quiz.musicOn) R.drawable.music_on else R.drawable.music_off
             )
 
             BackgroundMusic.musicPlayer?.apply {
-                if (musicOn) start() else pause()
+                if (quiz.musicOn) start() else pause()
             }
         }
     }
@@ -138,10 +128,9 @@ class QuizActivity : AppCompatActivity() {
     }
     override fun onResume(){
         super.onResume()
-        if(musicOn)
+        if(quiz.musicOn)
             BackgroundMusic.musicPlayer?.start()
     }
-
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayerCorrect.release()
@@ -163,42 +152,22 @@ class QuizActivity : AppCompatActivity() {
             it.visibility = View.VISIBLE
         }
 
-        val record = quiz[0]
-
-        //QUESTION
-        val size = if (quizSize > MAX_QUESTIONS) MAX_QUESTIONS else quizSize
+        //READ ANT THEN REMOVE FIRST QUESTION FROM QUERY
+        quiz.actualQuestion = quiz.questions.first()
+        quiz.questions.removeFirst()
 
         binding.textQuestion.text =
-            getString(R.string.question, score.questionNum.toString(), size.toString(), record[0])
-
-        //RIGHT ANSWER
-        correctAnswer = record[1]
+            getString(R.string.question, score.questionNum.toString(), quiz.size.toString(), quiz.actualQuestion?.text)
 
         //USER INFO IF WRONG ANSWER
-        try{
-            questionInfo  = record.getOrNull(5) ?: ""
-
-            //REMOVE INFO FROM RECORD BEFORE SHUFFLE
-            if(questionInfo != "")
-                record.removeAt(5)
-            //REMOVE QUESTION FROM RECORD BEFORE SHUFFLE
-            record.removeAt(0)
-        }
-        finally {
-            binding.textInfo.text = getString(R.string.info, correctAnswer, questionInfo)
-        }
-
+        binding.textInfo.text = getString(R.string.info, quiz.actualQuestion?.correctAnswer, quiz.actualQuestion?.info)
 
         //SHUFFLE ANSWERS
-        record.shuffle()
+        quiz.actualQuestion?.answersList?.shuffle()
 
-        binding.btnAnswerA.text = record.getOrNull(0) ?: ""
-        binding.btnAnswerB.text = record.getOrNull(1) ?: ""
-        binding.btnAnswerC.text = record.getOrNull(2) ?: ""
-        binding.btnAnswerD.text = record.getOrNull(3) ?: ""
-
-        //REMOVE THIS QUESTION FROM QUERY
-        quiz.removeAt(0)
+        answerButtons.forEachIndexed { index, answerBtn ->
+            answerBtn.text = quiz.actualQuestion?.answersList!![index]
+        }
     }
 
     private fun checkAnswer(btnAnswer: Button?) {
@@ -214,23 +183,23 @@ class QuizActivity : AppCompatActivity() {
         val userAnswer = btnAnswer?.text
 
         //IF CORRECT ANSWER
-        if (userAnswer == correctAnswer) {
-            btnAnswer.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
+        if (userAnswer == quiz.actualQuestion?.correctAnswer) {
+            btnAnswer?.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
             score.points++
             score.isCorrectAnswer = true
 
-            if (soundOn)
+            if (quiz.soundOn)
                 mediaPlayerCorrect.start()
         }
         //IF WRONG ANSWER
         else {
             score.isCorrectAnswer = false
-            if (soundOn)
+            if (quiz.soundOn)
                 mediaPlayerWrong.start()
 
             btnAnswer?.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
             //SET ORANGE BACKGROUND TO THE CORRECT ANSWER
-            when (correctAnswer) {
+            when (quiz.actualQuestion?.correctAnswer) {
                 binding.btnAnswerA.text -> binding.btnAnswerA.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
                 binding.btnAnswerB.text -> binding.btnAnswerB.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
                 binding.btnAnswerC.text -> binding.btnAnswerC.setBackgroundColor(ContextCompat.getColor(this, R.color.orange))
@@ -241,13 +210,13 @@ class QuizActivity : AppCompatActivity() {
 
     private fun checkQuizCounter() {
         //CHECK IF IT IS THE GAME END
-        if (quiz.size == 0 || score.questionNum == MAX_QUESTIONS) {
+        if (quiz.questions.size == 0 || score.questionNum == quiz.maxQuestions) {
             Intent(this, ResultActivity::class.java).apply {
                 putExtra("score", score.points.toString())
-                putExtra("lastCategory", category)
+                putExtra("lastCategory", quiz.category)
                 putExtra("questions", score.questionNum.toString())
-                putExtra("sound", soundOn)
-                putExtra("music", musicOn)
+                putExtra("sound", quiz.soundOn)
+                putExtra("music", quiz.musicOn)
                 startActivity(this)
             }
         }
