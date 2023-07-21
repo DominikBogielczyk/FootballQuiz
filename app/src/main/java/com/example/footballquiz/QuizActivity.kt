@@ -17,17 +17,16 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var mediaPlayerCorrect: MediaPlayer
     private lateinit var mediaPlayerWrong: MediaPlayer
     private lateinit var binding: ActivityQuizBinding
-    private var isCorrectAnswer = false
     private var correctAnswer = ""
     private var questionInfo = ""
-    private var points = 0
-    private var questionNum = 0
     private var quizSize = 0
     private var category = ""
     private var soundOn = true
     private var musicOn = true
     private var quiz = mutableListOf<MutableList<String>>()
     private lateinit var answerButtons: List<Button>
+
+    private var score = Score(0, 0, false)
 
     //disable back press button
     override fun onBackPressed() {}
@@ -98,7 +97,7 @@ class QuizActivity : AppCompatActivity() {
         binding.btnAnswerC.setOnClickListener { checkAnswer(binding.btnAnswerC) }
         binding.btnAnswerD.setOnClickListener { checkAnswer(binding.btnAnswerD) }
         binding.btnInfo.setOnClickListener {
-            if(!isCorrectAnswer)
+            if(!score.isCorrectAnswer)
                 showInfo()
             else
                 checkQuizCounter()
@@ -156,7 +155,7 @@ class QuizActivity : AppCompatActivity() {
         binding.btnNextQuestion.visibility = View.INVISIBLE
 
         timer.start()
-        questionNum++
+        score.questionNum++
 
         answerButtons.forEach {
             it.setBackgroundColor(ContextCompat.getColor(this, R.color.light_yellow))
@@ -170,7 +169,7 @@ class QuizActivity : AppCompatActivity() {
         val size = if (quizSize > MAX_QUESTIONS) MAX_QUESTIONS else quizSize
 
         binding.textQuestion.text =
-            getString(R.string.question, questionNum.toString(), size.toString(), record[0])
+            getString(R.string.question, score.questionNum.toString(), size.toString(), record[0])
 
         //RIGHT ANSWER
         correctAnswer = record[1]
@@ -217,15 +216,15 @@ class QuizActivity : AppCompatActivity() {
         //IF CORRECT ANSWER
         if (userAnswer == correctAnswer) {
             btnAnswer.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
-            points++
-            isCorrectAnswer = true
+            score.points++
+            score.isCorrectAnswer = true
 
             if (soundOn)
                 mediaPlayerCorrect.start()
         }
         //IF WRONG ANSWER
         else {
-            isCorrectAnswer = false
+            score.isCorrectAnswer = false
             if (soundOn)
                 mediaPlayerWrong.start()
 
@@ -242,11 +241,11 @@ class QuizActivity : AppCompatActivity() {
 
     private fun checkQuizCounter() {
         //CHECK IF IT IS THE GAME END
-        if (quiz.size == 0 || questionNum == MAX_QUESTIONS) {
+        if (quiz.size == 0 || score.questionNum == MAX_QUESTIONS) {
             Intent(this, ResultActivity::class.java).apply {
-                putExtra("score", points.toString())
+                putExtra("score", score.points.toString())
                 putExtra("lastCategory", category)
-                putExtra("questions", questionNum.toString())
+                putExtra("questions", score.questionNum.toString())
                 putExtra("sound", soundOn)
                 putExtra("music", musicOn)
                 startActivity(this)
